@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {dataset,reportData} from './dist/data.js';
+import {analysisStats,analysisView} from './dist/analysis.js';
+const words=Object.keys(dataset),choices=Object.fromEntries(words.map(w=>[w,dataset[w].meanings.slice(0,3).map((n,i)=>({id:n.id,weight:[50,30,20][i]}))]));
+const r=reportData(words,choices),s=analysisStats(r);
+assert.ok(Math.abs(s.bands.reduce((a,b)=>a+b,0)-100)<1e-8);
+assert.ok(Math.abs(s.concentration-.38)<1e-8);
+assert.equal(s.anchors,words.length*3);
+const a=analysisView(r,dataset,'<script>');assert.ok(!a.includes('<script>'));assert.ok(!/NaN|undefined/.test(a));
+choices[words[0]][0].weight=80;choices[words[0]][1].weight=10;choices[words[0]][2].weight=10;
+assert.notEqual(analysisStats(reportData(words,choices)).concentration,s.concentration);
+console.log('Analysis verified: weight bands sum to 100%, concentration follows weights, output escapes text, chart values are finite.');
