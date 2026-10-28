@@ -1,0 +1,11 @@
+.DS_Store
+.openai/
+.env
+.env.*
+*.log
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+*.pem
+*.key
